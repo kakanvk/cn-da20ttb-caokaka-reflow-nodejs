@@ -1,0 +1,36 @@
+.Footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 70px;
+    background: linear-gradient(85deg, #FC6076 32.67%, #FF9A44 131.74%);
+}
+
+.Footer_left{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: white;
+    font-weight: 500;
+}
+
+.Footer_left img{
+    width: 120px;
+}
+
+.Footer_right{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.Footer_right > div{
+    display: flex;
+    align-items: center;
+    color: white;
+    gap: 8px;
+}
+
+.Footer_right > div > ion-icon{
+    font-size: 20px;
+}

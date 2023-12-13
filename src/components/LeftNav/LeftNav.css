@@ -1,0 +1,47 @@
+.LeftNav{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    width: 100%;
+}
+
+.LeftNav_img{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 30px 35px;
+}
+
+.LeftNav .LeftNav_img img{
+    display: block;
+    width: 60%;
+}
+
+.LeftNav_tab{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+}
+
+.LeftNav_tab_item{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: black;
+    text-decoration: none;
+    gap: 10px;
+    padding-left: 30px;
+    font-weight: 600;
+    height: 55px;
+    font-size: 17px;
+}
+
+.LeftNav_tab_item ion-icon{
+    font-size: 20px;
+}
+
+.tab_active{
+    background: var(--Gradient-HC, linear-gradient(85deg, #FC6076 32.67%, #FF9A44 131.74%));
+    color: white;
+}
