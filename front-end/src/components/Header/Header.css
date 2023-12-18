@@ -103,6 +103,10 @@
     z-index: 10;
 }
 
+.User-content:has(.overplay){
+    overflow: hidden;
+}
+
 .Header > button {
     cursor: pointer;
     display: flex;
