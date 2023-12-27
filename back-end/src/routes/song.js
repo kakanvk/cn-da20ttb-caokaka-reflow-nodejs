@@ -5,6 +5,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.get('/', songController.getAllSongs);
 router.get('/:id', songController.getSongById);
-router.post('/', authMiddleware.authenticate, songController.createSong);
+router.post('/', authMiddleware.authenticate, authMiddleware.isAdmin, songController.createSong);
 
 module.exports = router;

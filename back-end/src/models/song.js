@@ -10,6 +10,8 @@ const songSchema = new mongoose.Schema({
   title: { type: String, required: true },
   sections: [sectionSchema], // Mảng các đoạn trong bài hát
   categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  singerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Singer' }, // Tham chiếu đến ca sĩ
+  image: { type: String }, // Link ảnh của bài hát
 });
 
 const Song = mongoose.model('Song', songSchema);

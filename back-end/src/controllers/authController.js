@@ -46,7 +46,7 @@ const login = async (req, res) => {
         const secretKey = "REFLOW";
 
         const token = jwt.sign({ user: { id: user.id, username: user.username, role: user.role } }, secretKey, {
-            expiresIn: '1h',
+            expiresIn: '6h',
         });
         
         res.cookie('token', token, { httpOnly: true });
