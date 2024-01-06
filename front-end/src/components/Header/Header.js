@@ -1,16 +1,23 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Header.css'
 
 import avt from "../../imgs/avt.jpg"
 import premiumIcon from "../../imgs/premium.png"
+import axios from 'axios';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 function Header() {
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const [suggestDisplay, setSuggestDisplay] = useState(false);
     const [searchButtonDisplay, setSearchButtonDisplay] = useState(false);
     const [popupDisplay, setPopupDisplay] = useState(false);
     const [searchInput, setSearchInput] = useState('');
+
+    const [currentUser, setCurrentUser] = useState();
 
     const suggests = [
         {
@@ -65,6 +72,46 @@ function Header() {
         setSearchInput(e.target.value)
     }
 
+    const fecthUserData = () => {
+        axios.get(`http://localhost:3005/api/users/info`, {
+            withCredentials: true
+        })
+            .then(response => {
+                // console.log(response.data);
+                setCurrentUser(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    const handleLogout = () => {
+        axios.get(`http://localhost:3005/api/auth/logout`, {
+            withCredentials: true
+        })
+            .then(response => {
+                console.log(response.data);
+                window.location.reload();
+            })
+            .catch(error => {
+                // console.log(error);
+            });
+    }
+
+    const handleLoginClick = () => {
+
+        const stateData = {
+            action: "redirect",
+            url: location.pathname
+        };
+
+        navigate('/login', { state: stateData });
+    }
+
+    useEffect(() => {
+        fecthUserData();
+    }, [])
+
     return (
         <div className="Header">
             <div className='Header_search'>
@@ -102,53 +149,65 @@ function Header() {
                     </>
                 }
             </div>
-            {/* <button>Đăng nhập</button> */}
             <img src={premiumIcon} alt='' />
-            <div className='Header_avatar'>
-                <img src={avt} alt="" onClick={() => setPopupDisplay(!popupDisplay)} />
-                {
-                    popupDisplay &&
-                    <>
-                        <div className='overplay' onClick={() => setPopupDisplay(!popupDisplay)}></div>
-                        <div className='Header_avatar_popup'>
-                            <div className='avatar_popup_name'>
-                                <img src={avt} alt="" />
-                                <div>
-                                    <h2>Ka Ka</h2>
-                                    <span>Free</span>
-                                </div>
-                            </div>
-                            <div className='avatar_popup_premium'>
-                                <p>
-                                    Nâng cấp tài khoản thành Premium để sử dụng đầy đủ mọi tính năng. Nâng cấp 1 lần, sử dụng mãi mãi.
-                                </p>
-                                <button>
-                                    <img src={premiumIcon} alt='' />
-                                    <span>Nâng cấp</span>
-                                </button>
-                            </div>
-                            <div className='avatar_popup_option'>
-                                <h2>Cá nhân</h2>
-                                <a href='/'>
-                                    <ion-icon name="heart-outline"></ion-icon>
-                                    <span>Danh sách yêu thích</span>
-                                </a>
-                                <a href='/'>
-                                    <ion-icon name="eye-outline"></ion-icon>
-                                    <span>Đã xem gần đây</span>
-                                </a>
-                            </div>
-                            <div className='avatar_popup_option'>
-                                <a href='/'>
-                                    <ion-icon name="log-out-outline"></ion-icon>
-                                    <span>Đăng xuất</span>
-                                </a>
-                            </div>
-                        </div>
-                    </>
+            {
+                currentUser ?
+                    <div className='Header_avatar'>
+                        <img src={currentUser.avatar} alt="" onClick={() => setPopupDisplay(!popupDisplay)} />
+                        {
+                            popupDisplay &&
+                            <>
+                                <div className='overplay' onClick={() => setPopupDisplay(!popupDisplay)}></div>
+                                <div className='Header_avatar_popup'>
+                                    <div className='avatar_popup_name'>
+                                        <img src={currentUser.avatar} alt="" />
+                                        <div>
+                                            <h2>{currentUser.name}</h2>
+                                            <span className={currentUser.role === "Premium" ? 'bradge-premium' : currentUser.role === "Admin" ? 'bradge-admin' : ''}>{currentUser.role}</span>
+                                        </div>
+                                    </div>
+                                    <div className='avatar_popup_premium'>
+                                        <p>
+                                            Nâng cấp tài khoản thành Premium để sử dụng đầy đủ mọi tính năng. Nâng cấp 1 lần, sử dụng mãi mãi.
+                                        </p>
+                                        <button>
+                                            <img src={premiumIcon} alt='' />
+                                            <span>Nâng cấp</span>
+                                        </button>
+                                    </div>
+                                    <div className='avatar_popup_option'>
+                                        <h2>Cá nhân</h2>
+                                        {
+                                            currentUser.role === "Admin" ?
+                                                <a href='/admin'>
+                                                    <ion-icon name="settings-outline"></ion-icon>
+                                                    <span>Admin Dashboard</span>
+                                                </a>
+                                            : ""    
 
-                }
-            </div>
+                                        }
+                                        <a href='/'>
+                                            <ion-icon name="heart-outline"></ion-icon>
+                                            <span>Danh sách yêu thích</span>
+                                        </a>
+                                        <a href='/'>
+                                            <ion-icon name="eye-outline"></ion-icon>
+                                            <span>Đã xem gần đây</span>
+                                        </a>
+                                    </div>
+                                    <div className='avatar_popup_option' onClick={() => handleLogout()}>
+                                        <a>
+                                            <ion-icon name="log-out-outline"></ion-icon>
+                                            <span>Đăng xuất</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </>
+
+                        }
+                    </div> :
+                    <button className='Login_button' onClick={() => handleLoginClick()}>Đăng nhập</button>
+            }
         </div>
     )
 }

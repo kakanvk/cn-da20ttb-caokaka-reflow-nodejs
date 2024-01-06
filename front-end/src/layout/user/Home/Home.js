@@ -15,7 +15,7 @@ function Home() {
         },
         {
             name: "Phương Mỹ Chi",
-            imgURL: "https://scontent.fsgn5-5.fna.fbcdn.net/v/t39.30808-6/375455256_843021250525431_3801820340102275189_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeEoVqfDFLtHV33OQ96uhySxUGttVF4o-JJQa21UXij4kvdfMrOEuM1Ecg4CUqcYFdROsRj5dz_PShq6getEWzig&_nc_ohc=AOGvg23xTK8AX9VmFhq&_nc_ht=scontent.fsgn5-5.fna&oh=00_AfBBsNyRcPYBWIEhClMQ1isffIPiwbxw2W3AIWo-DW904A&oe=65846328"
+            imgURL: "https://scontent.fsgn5-14.fna.fbcdn.net/v/t39.30808-6/375455256_843021250525431_3801820340102275189_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeEoVqfDFLtHV33OQ96uhySxUGttVF4o-JJQa21UXij4kvdfMrOEuM1Ecg4CUqcYFdROsRj5dz_PShq6getEWzig&_nc_ohc=B2YyzSVbvmIAX8C8nn3&_nc_ht=scontent.fsgn5-14.fna&oh=00_AfDlmqaNobZQ-aPJlcKsJqqLr0rYDi5LiW6v0g_BUEBaoA&oe=65943528"
         },
         {
             name: "Hoàng Dũng",

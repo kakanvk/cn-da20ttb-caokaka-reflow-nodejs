@@ -21,6 +21,7 @@
     border-radius: 5px;
     background-color: white;
     position: relative;
+    border: 1px solid rgb(214, 214, 214);
 }
 
 .Header_search_input{
@@ -107,7 +108,7 @@
     overflow: hidden;
 } */
 
-.Header > button {
+.Header > .Login_button {
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -120,6 +121,7 @@
     font-weight: 600;
     font-size: 16px;
     border: none;
+    text-decoration: none;
 }
 
 .Header_avatar{
@@ -249,6 +251,7 @@
     gap: 8px;
     border-top: 1.5px solid rgb(229, 229, 229);
     padding-top: 15px;
+    cursor: pointer;
 }
 
 .avatar_popup_option > h2{
@@ -271,4 +274,12 @@
 
 .avatar_popup_option > a > ion-icon{
     font-size: 18px;
+}
+
+.bradge-premium{
+    background: var(--Gradient-HC, linear-gradient(85deg, #FC6076 32.67%, #FF9A44 131.74%));
+}
+
+.avatar_popup_name > div > .bradge-admin{
+    background-color: black;
 }

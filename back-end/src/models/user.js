@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true },
   username: { type: String, required: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['free', 'premium', 'admin'], required: true },
+  avatar: { type: String, required: true },
+  role: { type: String, enum: ['Free', 'Premium', 'Admin'], required: true },
   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
 });
 

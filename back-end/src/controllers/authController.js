@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/jwt');
 
 const register = async (req, res) => {
-    const { username, password } = req.body;
+
+    const { username, password, name, email, avatar, role } = req.body;
 
     try {
         // Kiểm tra xem người dùng đã tồn tại hay chưa
@@ -20,6 +21,10 @@ const register = async (req, res) => {
         const newUser = new User({
             username,
             password: hashedPassword,
+            email,
+            name,
+            role: role ? role : 'Free',
+            avatar: avatar ? avatar : "https://cdn-icons-png.flaticon.com/512/8792/8792047.png"
         });
 
         await newUser.save();

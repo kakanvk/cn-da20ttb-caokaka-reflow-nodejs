@@ -9,7 +9,10 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 
 // Connect to MongoDB
 connectDB();
@@ -22,7 +25,7 @@ app.use('/api/categorys', require('./routes/category'));
 app.use('/api/singers', require('./routes/singer'));
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

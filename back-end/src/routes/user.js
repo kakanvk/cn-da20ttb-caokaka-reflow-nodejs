@@ -5,7 +5,13 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.get('/', authMiddleware.authenticate, authMiddleware.isAdmin, userController.getAllUsers);
 router.get('/info', authMiddleware.authenticate, userController.getCurrentUser);
+router.get('/favorites', authMiddleware.authenticate, userController.getFavoriteSongs);
+router.post('/favorites', authMiddleware.authenticate, userController.addFavoriteSong);
+router.delete('/favorites/multiple', authMiddleware.authenticate, userController.removeFavoriteSongsByIds);
+router.delete('/favorites/:id', authMiddleware.authenticate, userController.removeFavoriteSongById);
 router.get('/:id', authMiddleware.authenticate, userController.getUserById);
-// Thêm các route khác theo yêu cầu
+router.put('/:id', authMiddleware.authenticate, userController.updateUserById);
+router.delete('/multiple', authMiddleware.authenticate, authMiddleware.isAdmin, userController.deleteUsersByIds);
+router.delete('/:id', authMiddleware.authenticate, authMiddleware.isAdmin, userController.deleteUserById);
 
 module.exports = router;
