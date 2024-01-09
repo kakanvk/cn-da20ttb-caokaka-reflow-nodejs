@@ -1,4 +1,5 @@
 const Singer = require('../models/singer');
+const mongoose = require('mongoose');
 
 // Hàm để lấy toàn bộ danh sách singer
 const getAllSingers = async (req, res) => {
@@ -94,10 +95,35 @@ const deleteSingerById = async (req, res) => {
     }
 };
 
+const deleteSingersByIds = async (req, res) => {
+    try {
+        // Lấy danh sách id singer từ request body
+        const { singerIds } = req.body;
+
+        // Kiểm tra xem singerIds có đúng định dạng hay không
+        if (!Array.isArray(singerIds) || singerIds.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+            return res.status(400).json({ message: 'Invalid singer IDs format' });
+        }
+
+        // Xoá các singer có id nằm trong danh sách singerIds
+        const deletedSingers = await Singer.deleteMany({ _id: { $in: singerIds } });
+
+        if (deletedSingers.deletedCount === 0) {
+            return res.status(404).json({ message: 'No singers found with the given IDs' });
+        }
+
+        res.json({ message: 'Singers deleted successfully', deletedSingers });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     getAllSingers,
     createSinger,
     getSingerById,
     updateSingerById,
-    deleteSingerById
+    deleteSingerById,
+    deleteSingersByIds
 };

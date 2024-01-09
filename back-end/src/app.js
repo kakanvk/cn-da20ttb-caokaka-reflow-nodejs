@@ -17,7 +17,7 @@ app.use(cors({
 // Connect to MongoDB
 connectDB();
 
-// Routes
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/songs', require('./routes/song'));
 app.use('/api/users', require('./routes/user'));

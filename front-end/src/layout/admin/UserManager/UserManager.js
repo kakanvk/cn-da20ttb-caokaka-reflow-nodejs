@@ -1,7 +1,7 @@
 
 import ImgCrop from 'antd-img-crop';
 import { useEffect, useState } from 'react';
-import { Button, Table, Flex, Breadcrumb, Badge, Avatar, Modal, Form, Input, Upload, Spin, Select } from 'antd';
+import { Button, Table, Flex, Breadcrumb, Badge, Avatar, Modal, Form, Input, Upload, Spin, Select, Image } from 'antd';
 import axios from 'axios';
 import { FireOutlined, LockOutlined, MailOutlined, SmileOutlined, UserOutlined } from '@ant-design/icons';
 import imageCompression from 'browser-image-compression';
@@ -27,9 +27,9 @@ function UserManager() {
             title: 'Họ và tên',
             dataIndex: 'name',
             render: (record) =>
-                <Flex align='center' gap={7}>
-                    <Avatar src={record.avatar} size={26} />
-                    <h4 style={{ fontWeight: 500 }}>{record.name}</h4>
+                <Flex align='center' gap={10}>
+                    <Image src={record.avatar} width={40} style={{borderRadius: 30}}/>
+                    <h4 style={{ fontWeight: 600 }}>{record.name}</h4>
                 </Flex>
         },
         {

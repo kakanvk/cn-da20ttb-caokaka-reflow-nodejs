@@ -1,7 +1,7 @@
 
 import ImgCrop from 'antd-img-crop';
 import { useEffect, useState } from 'react';
-import { Button, Table, Flex, Breadcrumb, Badge, Avatar, Modal, Form, Input, Upload, Spin, Select, message } from 'antd';
+import { Button, Table, Flex, Breadcrumb, Badge, Avatar, Modal, Form, Input, Upload, Spin, Select, message, Image } from 'antd';
 import axios from 'axios';
 import { FireOutlined, LockOutlined, MailOutlined, SmileOutlined, UserOutlined } from '@ant-design/icons';
 import imageCompression from 'browser-image-compression';
@@ -49,13 +49,15 @@ function SongManager() {
             title: 'Tên bài hát',
             dataIndex: 'name',
             render: (record) =>
-                <Link to={`section/${record._id}`}>
+                <Flex align='center' justify='space-between'>
                     <Flex align='center' gap={10}>
-                        <Avatar shape="square" src={record.image} size={40} />
+                        <Image shape="square" src={record.image} width={40} style={{borderRadius: 5}}/>
                         <h4 style={{ fontWeight: 500 }}>{record.title}</h4>
                     </Flex>
-                </Link>
-
+                    <Link to={`section/${record._id}`}>
+                        <Button size='small'>Chi tiết</Button>
+                    </Link>
+                </Flex>
         },
         {
             title: 'Ca sĩ',

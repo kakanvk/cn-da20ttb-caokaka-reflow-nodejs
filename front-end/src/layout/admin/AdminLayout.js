@@ -18,6 +18,8 @@ import UpdateSong from './SongManager/UpdateSong';
 import SectionManager from './SongManager/SectionManager';
 import UpdateSection from './SongManager/UpdateSection';
 import SingerManager from './SingerManager/SingerManager';
+import UpdateSinger from './SingerManager/UpdateSinger';
+import UpdateCategory from './CategoryManager/UpdateCategory';
 const { Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -88,7 +90,9 @@ const AdminLayout = () => {
                             <Route path="users" element={<UserManager />} />
                             <Route path="users/update/:id" element={<UpdateUser />} />
                             <Route path="categories" element={<CategoryManager />} />
+                            <Route path="categories/update/:id" element={<UpdateCategory />} />
                             <Route path="singers" element={<SingerManager />} />
+                            <Route path="singers/update/:id" element={<UpdateSinger />} />
                             <Route path="songs" element={<SongManager />} />
                             <Route path="songs/section/:id" element={<SectionManager />} />
                             <Route path="songs/section/:id/update/:sectionId" element={<UpdateSection />} />

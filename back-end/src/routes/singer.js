@@ -16,6 +16,7 @@ router.get('/:id', singerController.getSingerById);
 router.put('/:id', authMiddleware.authenticate, authMiddleware.isAdmin, singerController.updateSingerById);
 
 // [DELETE] /api/singers/:id 
+router.delete('/multiple', authMiddleware.authenticate, authMiddleware.isAdmin, singerController.deleteSingersByIds);
 router.delete('/:id', authMiddleware.authenticate, authMiddleware.isAdmin, singerController.deleteSingerById);
 
 module.exports = router;
