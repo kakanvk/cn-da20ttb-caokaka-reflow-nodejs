@@ -3,7 +3,7 @@ import ImgCrop from 'antd-img-crop';
 import { useEffect, useState } from 'react';
 import { Button, Table, Flex, Breadcrumb, Badge, Avatar, Modal, Form, Input, Upload, Spin, Select, message, Image } from 'antd';
 import axios from 'axios';
-import { FireOutlined, LockOutlined, MailOutlined, SmileOutlined, UserOutlined } from '@ant-design/icons';
+import { FireOutlined } from '@ant-design/icons';
 import imageCompression from 'browser-image-compression';
 import { storage } from '../../../firebase';
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
@@ -51,7 +51,7 @@ function SongManager() {
             render: (record) =>
                 <Flex align='center' justify='space-between'>
                     <Flex align='center' gap={10}>
-                        <Image shape="square" src={record.image} width={40} style={{borderRadius: 5}}/>
+                        <Image shape="square" src={record.image} width={50} style={{borderRadius: 5}}/>
                         <h4 style={{ fontWeight: 500 }}>{record.title}</h4>
                     </Flex>
                     <Link to={`section/${record._id}`}>

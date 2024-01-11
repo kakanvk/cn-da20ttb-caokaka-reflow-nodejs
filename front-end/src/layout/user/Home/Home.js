@@ -1,8 +1,45 @@
 
 import { Link } from 'react-router-dom';
 import './Home.css'
+import { Spin } from 'antd';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function Home() {
+
+    const [featuredSongs, setFeaturedSongs] = useState([]);
+    const [featuredSingers, setFeaturedSingers] = useState([]);
+
+    const [spinning, setSpinning] = useState(false);
+
+    const fetchData = async () => {
+        setSpinning(true);
+
+        try {
+            const [songResponse, singerResponse] = await Promise.all([
+                axios.get(`http://localhost:3005/api/songs`, { withCredentials: true }),
+                axios.get(`http://localhost:3005/api/singers`, { withCredentials: true }),
+            ]);
+
+            console.log(songResponse.data);
+            console.log(singerResponse.data);
+
+            setFeaturedSongs(songResponse.data);
+            setFeaturedSingers(singerResponse.data);
+
+            setSpinning(false);
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setSpinning(false);
+        }
+    };
+
+    useEffect(() => {
+
+        fetchData();
+    }, [])
 
     const artists = [
         {
@@ -86,6 +123,7 @@ function Home() {
 
     return (
         <div className="Home">
+            <Spin spinning={spinning} fullscreen />
             <div className='Home_banner'>
 
             </div>
@@ -99,11 +137,11 @@ function Home() {
                 </div>
                 <div className='Home_content_artists'>
                     {
-                        artists.map((artist, index) => {
+                        featuredSingers.map((artist, index) => {
                             return (
-                                <Link className='artist_box' to="/" key={index}>
+                                <Link className='artist_box' to="/" key={artist?._id}>
                                     <div>
-                                        <img src={artist.imgURL} alt="" />
+                                        <img src={artist.image} alt="" />
                                     </div>
                                     <h4>{artist.name}</h4>
                                     <span>Nghệ sĩ</span>
@@ -124,15 +162,15 @@ function Home() {
                 </div>
                 <div className='Home_content_songs'>
                     {
-                        songs.map((song, index) => {
+                        featuredSongs.map((song, index) => {
                             return (
-                                <Link className='song_mini_box' to="/songs/abc" key={index}>
+                                <Link className='song_mini_box' to={`/screens/${song?._id}`} key={song?._id}>
                                     <div className='song_mini_box_img'>
-                                        <img src={song.imgURL} alt=''/>
+                                        <img src={song?.image} alt='' />
                                     </div>
                                     <div className='song_mini_box_text'>
-                                        <h4>{song.name}</h4>
-                                        <span>{song.artist}</span>
+                                        <h4>{song?.title}</h4>
+                                        <span>{song?.singerId.name}</span>
                                     </div>
                                     <ion-icon name="ellipsis-vertical"></ion-icon>
                                 </Link>
