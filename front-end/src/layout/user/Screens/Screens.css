@@ -59,6 +59,8 @@
     justify-content: center;
     flex-direction: column;
     flex: 1;
+    text-align: center;
+    padding: 0 20px;
 }
 
 .Screens_view_main h1 {
@@ -76,15 +78,26 @@
 .Screens_view_option_left {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 5px;
     color: rgb(155, 155, 155);
-    font-weight: 500;
 }
 
 .Screens_view_option_left>div {
     display: flex;
     align-items: center;
     gap: inherit;
+}
+
+.Screens_view_option_left > div > span {
+    font-weight: 500;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.Screens_view_option_left > div > span:hover{
+    background-color: rgb(241, 241, 241);
+    color: black;
 }
 
 .Screens_view_option_right {
@@ -322,4 +335,9 @@
 .fullscreen {
     width: 100vw;
     height: 100vh;
+}
+
+.Screens_view_option_left > .currentSection > span{
+    font-weight: 800;
+    color: black;
 }

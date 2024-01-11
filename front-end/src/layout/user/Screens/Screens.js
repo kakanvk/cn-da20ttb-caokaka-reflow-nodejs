@@ -18,6 +18,8 @@ function Screens() {
     const [visiblePara, setVisiblePara] = useState(2);
 
     const [lyrics, setLyrics] = useState();
+    const [sentences, setSentences] = useState([]);
+    const [currentSentenceIndex, setCurrentSentenceIndex] = useState(-1);
 
     const [songsData, setSongsData] = useState();
     const [featuredSongs, setFeaturedSongs] = useState([]);
@@ -29,6 +31,54 @@ function Screens() {
             setVisiblePara(2);
         else setVisiblePara(lyrics.length);
     }
+
+    const handleNextSentence = () => {
+        if (currentSentenceIndex < sentences.length - 1) {
+            setCurrentSentenceIndex(currentSentenceIndex + 1);
+        }
+    };
+
+    const handlePreviousSentence = () => {
+        if (currentSentenceIndex > 0) {
+            setCurrentSentenceIndex(currentSentenceIndex - 1);
+        }
+    };
+
+    const findFirstSentenceIndex = (paragraphId) => {
+        let firstSentenceIndex = -1;
+
+        sentences.some((sentence, index) => {
+            if (sentence.paragraph_id === paragraphId) {
+                firstSentenceIndex = index;
+                return true;
+            }
+            return false;
+        });
+
+        return firstSentenceIndex;
+    };
+
+    const handleKeyDown = (e) => {
+        switch (e.key) {
+            case 'ArrowLeft':
+                handlePreviousSentence();
+                break;
+            case 'ArrowRight':
+                handleNextSentence();
+                break;
+            default:
+                break;
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+
+        // Cleanup để tránh memory leak
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [currentSentenceIndex, spinning]);
 
     const handleFullScreenToggle = () => {
         const elem = document.querySelector('.Screens_view');
@@ -70,10 +120,32 @@ function Screens() {
             console.log(songResponse.data);
             console.log(singerResponse.data);
 
-            setLyrics(songResponse.data.sections);
 
             setSongsData(songResponse.data);
             setFeaturedSongs(singerResponse.data);
+
+            const sectionsData = songResponse.data.sections
+            setLyrics(sectionsData);
+
+            const formattedLyrics = [];
+
+            // Tách lời bài hát thành từng câu
+            sectionsData.forEach(section => {
+                const cleanedLyrics = section.lyrics.replace(/\n|<br\/>/g, '|');
+                const sentences = cleanedLyrics.split('|');
+
+                sentences.forEach(sentence => {
+                    formattedLyrics.push({
+                        paragraph: section.name,
+                        sentence: sentence.trim(),
+                        paragraph_id: section._id
+                    });
+                });
+            });
+
+            console.log(formattedLyrics);
+
+            setSentences(formattedLyrics)
 
             setSpinning(false);
 
@@ -85,7 +157,7 @@ function Screens() {
     };
 
     useEffect(() => {
-
+        setCurrentSentenceIndex(0);
         fetchData();
     }, [id])
 
@@ -119,16 +191,15 @@ function Screens() {
                     <img src={logo} alt="" />
                 </div>
                 <div className="Screens_view_main">
-                    <h1>Em đã bước tới như anh đã từng</h1>
-                    <h1>Chạy trốn với anh trên cánh đồng xanh</h1>
+                    <h1>{sentences[currentSentenceIndex]?.sentence}</h1>
                 </div>
                 <div className="Screens_view_option">
                     <div className="Screens_view_option_left">
                         {
                             lyrics?.map((ly, index) => {
                                 return (
-                                    <div key={index}>
-                                        <span>{ly.name}</span>
+                                    <div key={index} className={sentences[currentSentenceIndex]?.paragraph_id === ly._id ? "currentSection" : ""}>
+                                        <span onClick={() => {setCurrentSentenceIndex(findFirstSentenceIndex(ly._id))}}>{ly.name}</span>
                                         {index + 1 !== lyrics.length ? <ion-icon name="chevron-forward-outline"></ion-icon> : ''}
                                     </div>
                                 )
@@ -140,10 +211,12 @@ function Screens() {
                             <ion-icon name="image-outline" onClick={() => setVisiblePopup(!visiblePopup)}></ion-icon>
                         </Tooltip>
                         <Tooltip title="Slide trước" getPopupContainer={() => document.querySelector('.Screens_view')}>
-                            <ion-icon name="chevron-back-outline"></ion-icon>
+                            {/* Previous Slide */}
+                            <ion-icon name="chevron-back-outline" onClick={handlePreviousSentence}></ion-icon>
                         </Tooltip>
                         <Tooltip title="Slide kế" getPopupContainer={() => document.querySelector('.Screens_view')}>
-                            <ion-icon name="chevron-forward-outline"></ion-icon>
+                            {/* Next Slide */}
+                            <ion-icon name="chevron-forward-outline" onClick={handleNextSentence}></ion-icon>
                         </Tooltip>
                         <Tooltip title={isFullScreen ? "Thu nhỏ" : "Toàn màn hình"} getPopupContainer={() => document.querySelector('.Screens_view')}>
                             <ion-icon name="scan" onClick={handleFullScreenToggle}></ion-icon>
