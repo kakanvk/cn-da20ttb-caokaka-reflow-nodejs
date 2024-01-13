@@ -9,6 +9,7 @@ router.get('/favorites', authMiddleware.authenticate, userController.getFavorite
 router.post('/favorites', authMiddleware.authenticate, userController.addFavoriteSong);
 router.delete('/favorites/multiple', authMiddleware.authenticate, userController.removeFavoriteSongsByIds);
 router.delete('/favorites/:id', authMiddleware.authenticate, userController.removeFavoriteSongById);
+router.put('/edit-info', authMiddleware.authenticate, userController.changeInfoCurrentUser);
 router.get('/:id', authMiddleware.authenticate, userController.getUserById);
 router.put('/:id', authMiddleware.authenticate, userController.updateUserById);
 router.delete('/multiple', authMiddleware.authenticate, authMiddleware.isAdmin, userController.deleteUsersByIds);

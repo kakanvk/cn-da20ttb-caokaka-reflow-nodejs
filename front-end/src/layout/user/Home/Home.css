@@ -8,7 +8,17 @@
     width: 100%;
     height: 250px;
     border-radius: 10px;
-    background: var(--Gradient-HC, linear-gradient(85deg, #FC6076 32.67%, #FF9A44 131.74%));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.Home_banner > img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .Home_content{

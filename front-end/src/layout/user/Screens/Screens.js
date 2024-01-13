@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import premiumIcon from "../../../imgs/premium.png"
 import logo from "../../../imgs/logo.png"
+import bg from "../../../imgs/background/bg1.png"
 import './Screens.css'
 import { Link, useParams } from 'react-router-dom';
-import { Spin, Tooltip } from 'antd';
+import { Spin, Tooltip, Dropdown, Menu } from 'antd';
 import axios from "axios";
 
 function Screens() {
@@ -12,6 +13,7 @@ function Screens() {
     const { id } = useParams();
 
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [currentUserData, setCurrentUserData] = useState();
 
     const [lyricActiveTab, setLyricActiveTab] = useState(true);
     const [visiblePopup, setVisiblePopup] = useState(false);
@@ -20,8 +22,10 @@ function Screens() {
     const [lyrics, setLyrics] = useState();
     const [sentences, setSentences] = useState([]);
     const [currentSentenceIndex, setCurrentSentenceIndex] = useState(-1);
+    const [numberOfSentencesToShow, setNumberOfSentencesToShow] = useState(1);
 
     const [songsData, setSongsData] = useState();
+    const [backgrounds, setBackgroundsData] = useState();
     const [featuredSongs, setFeaturedSongs] = useState([]);
 
     const [spinning, setSpinning] = useState(false);
@@ -33,16 +37,66 @@ function Screens() {
     }
 
     const handleNextSentence = () => {
-        if (currentSentenceIndex < sentences.length - 1) {
-            setCurrentSentenceIndex(currentSentenceIndex + 1);
+        if (currentSentenceIndex < sentences.length - numberOfSentencesToShow) {
+            console.log("Next: ", currentSentenceIndex + numberOfSentencesToShow);
+            setCurrentSentenceIndex((prevIndex) => prevIndex + numberOfSentencesToShow);
         }
     };
 
     const handlePreviousSentence = () => {
-        if (currentSentenceIndex > 0) {
-            setCurrentSentenceIndex(currentSentenceIndex - 1);
+        if (currentSentenceIndex - numberOfSentencesToShow >= 0) {
+            console.log("Previous: ", currentSentenceIndex - numberOfSentencesToShow);
+            setCurrentSentenceIndex((prevIndex) => prevIndex - numberOfSentencesToShow);
         }
     };
+
+    const handleOptionChange = ({ key }) => {
+        setNumberOfSentencesToShow(parseInt(key, 10));
+    };
+
+    const renderLyrics = () => {
+        const startIndex = currentSentenceIndex;
+        const endIndex = startIndex + numberOfSentencesToShow;
+
+        const displayedSentences = sentences.slice(startIndex, endIndex);
+
+        return displayedSentences.map((item, index) => (
+            <h1 key={index}>{item.sentence}</h1>
+        ));
+    };
+
+    const handleChangeBackground = (_id) => {
+        axios.put(`http://localhost:3005/api/users/edit-info`, {
+            selected_background: _id
+        }, {
+            withCredentials: true
+        })
+            .then(response => {
+                // console.log(response.data);
+                fecthUserData();
+            })
+            .catch(error => {
+                // console.error('Error fetching data:', error);
+            });
+    }
+
+    const handleAddFavoriteSong = (_id) => {
+
+        console.log(_id);
+
+        axios.post(`http://localhost:3005/api/users/favorites`, {
+            songId: _id
+        }, {
+            withCredentials: true
+        })
+            .then(response => {
+                // console.log(response.data);
+                fecthUserData();
+            })
+            .catch(error => {
+                // console.error('Error fetching data:', error);
+            });
+    }
 
     const findFirstSentenceIndex = (paragraphId) => {
         let firstSentenceIndex = -1;
@@ -108,21 +162,37 @@ function Screens() {
         setIsFullScreen(!isFullScreen);
     };
 
+    const fecthUserData = () => {
+        axios.get(`http://localhost:3005/api/users/info`, {
+            withCredentials: true
+        })
+            .then(response => {
+                // console.log(response.data);
+                setCurrentUserData(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
     const fetchData = async () => {
         setSpinning(true);
 
+        fecthUserData();
         try {
-            const [songResponse, singerResponse] = await Promise.all([
+            const [songResponse, singerResponse, backgroundResponse] = await Promise.all([
                 axios.get(`http://localhost:3005/api/songs/${id}`, { withCredentials: true }),
                 axios.get(`http://localhost:3005/api/songs`, { withCredentials: true }),
+                axios.get(`http://localhost:3005/api/backgrounds`, { withCredentials: true }),
             ]);
 
-            console.log(songResponse.data);
-            console.log(singerResponse.data);
-
+            // console.log(songResponse.data);
+            // console.log(singerResponse.data);
+            // console.log(backgroundResponse.data);
 
             setSongsData(songResponse.data);
             setFeaturedSongs(singerResponse.data);
+            setBackgroundsData(backgroundResponse.data);
 
             const sectionsData = songResponse.data.sections
             setLyrics(sectionsData);
@@ -182,7 +252,10 @@ function Screens() {
     return (
         <div className="Screens">
             <Spin spinning={spinning} fullscreen />
-            <div className={`Screens_view ${isFullScreen ? 'fullscreen' : ''}`}>
+            <div className={`Screens_view ${isFullScreen ? 'fullscreen' : ''} dark_bg`}>
+                <div className="Screens_view_bg">
+                    <img src={currentUserData ? currentUserData.selected_background.image : "https://firebasestorage.googleapis.com/v0/b/chat-app-5b28c.appspot.com/o/reflow%2Fbg1.png?alt=media&token=d6f68ce0-20e8-49eb-a0a6-bc9f9b510294"} alt="" />
+                </div>
                 <div className="Screens_view_name">
                     <div>
                         <ion-icon name="musical-notes"></ion-icon>
@@ -191,7 +264,7 @@ function Screens() {
                     <img src={logo} alt="" />
                 </div>
                 <div className="Screens_view_main">
-                    <h1>{sentences[currentSentenceIndex]?.sentence}</h1>
+                    {renderLyrics()}
                 </div>
                 <div className="Screens_view_option">
                     <div className="Screens_view_option_left">
@@ -199,7 +272,7 @@ function Screens() {
                             lyrics?.map((ly, index) => {
                                 return (
                                     <div key={index} className={sentences[currentSentenceIndex]?.paragraph_id === ly._id ? "currentSection" : ""}>
-                                        <span onClick={() => {setCurrentSentenceIndex(findFirstSentenceIndex(ly._id))}}>{ly.name}</span>
+                                        <span onClick={() => { setCurrentSentenceIndex(findFirstSentenceIndex(ly._id)) }}>{ly.name}</span>
                                         {index + 1 !== lyrics.length ? <ion-icon name="chevron-forward-outline"></ion-icon> : ''}
                                     </div>
                                 )
@@ -207,6 +280,20 @@ function Screens() {
                         }
                     </div>
                     <div className="Screens_view_option_right">
+                        <Dropdown
+                            overlay={
+                                <Menu onClick={handleOptionChange} selectedKeys={numberOfSentencesToShow}>
+                                    <Menu.Item key="1">Hiển thị 1 câu</Menu.Item>
+                                    <Menu.Item key="2">Hiện thị 2 câu</Menu.Item>
+                                    <Menu.Item key="3">Hiển thị 3 câu</Menu.Item>
+                                </Menu>
+                            }
+                            placement="top"
+                            trigger={['click']}
+                            getPopupContainer={() => document.querySelector('.Screens_view')}
+                        >
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </Dropdown>
                         <Tooltip title="Hình nền" getPopupContainer={() => document.querySelector('.Screens_view')}>
                             <ion-icon name="image-outline" onClick={() => setVisiblePopup(!visiblePopup)}></ion-icon>
                         </Tooltip>
@@ -229,22 +316,41 @@ function Screens() {
                                     <div className="option_right_popup_free">
                                         <h4>Miễn phí</h4>
                                         <div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
+                                            {
+                                                backgrounds?.map((background) => {
+                                                    if (!background.premium_only) {
+                                                        return (
+                                                            <div
+                                                                key={background._id}
+                                                                className={currentUserData?.selected_background._id === background._id ? "selected_background" : ""}
+                                                                onClick={() => { handleChangeBackground(background._id) }}
+                                                            >
+                                                                <img src={background.image} alt="" />
+                                                            </div>
+                                                        )
+                                                    }
+                                                })
+                                            }
                                         </div>
                                     </div>
                                     <div className="option_right_popup_pre">
                                         <h4>Premium<img src={premiumIcon} alt="" /></h4>
                                         <div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
+                                            {
+                                                backgrounds?.map((background) => {
+                                                    if (background.premium_only) {
+                                                        return (
+                                                            <div
+                                                                key={background._id}
+                                                                className={currentUserData?.selected_background._id === background._id ? "selected_background" : ""}
+                                                                onClick={() => { handleChangeBackground(background._id) }}
+                                                            >
+                                                                <img src={background.image} alt="" />
+                                                            </div>
+                                                        )
+                                                    }
+                                                })
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -252,6 +358,7 @@ function Screens() {
                         }
                     </div>
                 </div>
+
             </div>
             <div className='Screens_top'>
                 <Link to="/screens">Phòng chiếu</Link>
@@ -261,7 +368,7 @@ function Screens() {
             <div className='Screens_songName'>
                 <div>
                     <span>{songsData?.title}</span>
-                    <button>
+                    <button onClick={() => { handleAddFavoriteSong(songsData._id) }}>
                         <ion-icon name="heart-outline"></ion-icon>
                         <span>Thêm vào danh sách yêu thích</span>
                     </button>

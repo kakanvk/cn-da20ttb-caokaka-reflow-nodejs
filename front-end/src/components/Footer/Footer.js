@@ -7,7 +7,7 @@ function Footer(){
         <div className="Footer">
             <div className='Footer_left'>
                 <img src={logo} alt=""/>
-                <p>Copyright Reflow © 2023. All right reserved.</p>
+                <p>Copyright by Reflow © 2023. All right reserved.</p>
             </div>
             <div className='Footer_right'>
                 <div>

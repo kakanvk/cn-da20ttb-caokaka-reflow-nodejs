@@ -2,6 +2,7 @@ const User = require('../models/user');
 const Song = require('../models/song');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Background = require('../models/background');
 
 const getAllUsers = async (req, res) => {
     try {
@@ -56,7 +57,7 @@ const getCurrentUser = async (req, res) => {
         const userId = req.user.id;
 
         // Truy vấn cơ sở dữ liệu để lấy thông tin chi tiết của người dùng hiện tại
-        const currentUser = await User.findById(userId);
+        const currentUser = await User.findById(userId).populate('selected_background');
 
         if (!currentUser) {
             return res.status(404).json({ message: 'User not found' });
@@ -346,6 +347,64 @@ const removeFavoriteSongsByIds = async (req, res) => {
     }
 };
 
+const changeInfoCurrentUser = async (req, res) => {
+    try {
+        // Kiểm tra xem người dùng đã đăng nhập hay chưa
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized - Invalid token' });
+        }
+
+        // Lấy thông tin người dùng từ database
+        const currentUser = await User.findById(req.user.id);
+
+        if (!currentUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (req.body.name) {
+            currentUser.name = req.body.name;
+        }
+
+        // Cập nhật email
+        if (req.body.email) {
+            currentUser.email = req.body.email;
+        }
+
+        if (req.body.username) {
+            currentUser.username = req.body.username;
+        }
+
+        if (req.body.password) {
+            currentUser.password = await bcrypt.hash(req.body.password, 10);
+        }
+
+        if (req.body.avatar) {
+            currentUser.avatar = req.body.avatar;
+        }
+
+        if (req.body.selected_background) {
+
+            const background = await Background.findById(req.body.selected_background);
+
+            if(currentUser.role!=="Free"){
+                currentUser.selected_background = req.body.selected_background;
+            } else if(!background.premium_only){
+                currentUser.selected_background = req.body.selected_background;
+            }
+
+        }
+
+        // Lưu thay đổi vào cơ sở dữ liệu
+        await currentUser.save();
+
+        // Trả về thông tin người dùng sau khi thay đổi
+        res.json({ message: 'Background changed successfully', user: currentUser });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     getAllUsers,
     getUserById,
@@ -357,4 +416,5 @@ module.exports = {
     getFavoriteSongs,
     removeFavoriteSongById,
     removeFavoriteSongsByIds,
+    changeInfoCurrentUser,
 };

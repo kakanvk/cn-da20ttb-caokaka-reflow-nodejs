@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
   avatar: { type: String, required: true },
-  selected_backround: { type: mongoose.Schema.Types.ObjectId, ref: 'Background'},
+  selected_background: { type: mongoose.Schema.Types.ObjectId, ref: 'Background' },
   role: { type: String, enum: ['Free', 'Premium', 'Admin'], required: true },
   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
 });
