@@ -43,7 +43,7 @@ function Login() {
                 console.log(response.data);
                 setTimeout(() => {
                     successMessage();
-                }, 1000)
+                }, 500)
                 setSpinning(true);
                 setTimeout(() => {
                     setSpinning(false);
@@ -52,7 +52,7 @@ function Login() {
                     } else {
                         navigate("/");
                     }
-                }, 2000);
+                }, 1500);
             })
             .catch(error => {
                 // console.error('Error fetching data:', error);

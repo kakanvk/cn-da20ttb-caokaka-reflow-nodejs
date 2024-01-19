@@ -315,8 +315,8 @@ const removeFavoriteSongsByIds = async (req, res) => {
             return res.status(401).json({ message: 'Unauthorized - Invalid token' });
         }
 
-        // Lấy danh sách id bài hát từ request body
         const { songIds } = req.body;
+        // Lấy danh sách id bài hát từ request body
 
         // Kiểm tra xem songIds có đúng định dạng hay không
         if (!Array.isArray(songIds) || songIds.some(id => !mongoose.Types.ObjectId.isValid(id))) {

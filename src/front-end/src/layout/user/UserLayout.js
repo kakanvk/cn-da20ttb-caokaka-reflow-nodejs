@@ -8,6 +8,7 @@ import Songs from "./Songs/Songs";
 import Screens from "./Screens/Screens";
 
 import './UserLayout.css';
+import Search from "./Search/Search";
 
 function UserLayout() {
     const userContentRef = useRef(null);
@@ -31,6 +32,7 @@ function UserLayout() {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/songs" element={<Songs />} />
+                            <Route path="/search" element={<Search />} />
                             <Route path="/screens/:id" element={<Screens />} />
                         </Routes>
                     </div>

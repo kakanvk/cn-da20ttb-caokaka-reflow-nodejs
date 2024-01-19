@@ -192,7 +192,7 @@ function UpdateUser() {
                         title: 'Cập nhật',
                     },
                     {
-                        title: 'id',
+                        title: userData?.name,
                     },
                 ]}
             />

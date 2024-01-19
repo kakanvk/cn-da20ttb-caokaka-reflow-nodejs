@@ -213,18 +213,15 @@ function UpdateCategory() {
                     <Form.Item
                         name="avatar"
                     >
-                        <ImgCrop showGrid>
-                            <Upload
-                                listType="picture-card"
-                                defaultFileList={fileList}
-                                valuePropName="avatar"
-                                onChange={onChange}
-                                onPreview={onPreview}
-                                maxCount={1}
-                            >
-                                Upload
-                            </Upload>
-                        </ImgCrop>
+                        <Upload
+                            listType="picture-card"
+                            defaultFileList={fileList}
+                            valuePropName="avatar"
+                            onChange={onChange}
+                            maxCount={1}
+                        >
+                            Upload
+                        </Upload>
                     </Form.Item>
                     <Form.Item style={{ paddingTop: 20 }}>
                         <Button type="primary" htmlType="submit" className="login-form-button" size="large" style={{ width: "100%" }}>

@@ -67,6 +67,17 @@ function Header() {
         }
     ]
 
+    const handleSearchSong = () => {
+        setSuggestDisplay(false);
+        navigate(`/search?keyword=${searchInput}`);
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSearchSong();
+        }
+    }
+
     const handleChangeTextInput = (e) => {
         setSearchButtonDisplay(!(e.target.value === ''));
         setSearchInput(e.target.value)
@@ -120,10 +131,14 @@ function Header() {
                     <input type='text' placeholder='Tìm kiếm...'
                         onFocus={() => setSuggestDisplay(true)}
                         onChange={(e) => handleChangeTextInput(e)}
+                        onKeyDown={(e) => handleKeyDown(e)}
                         value={searchInput}
                     />
                     {
-                        searchButtonDisplay && <span>Tìm kiếm</span>
+                        searchButtonDisplay &&
+                        <span
+                            onClick={() => { handleSearchSong() }}
+                        >Tìm kiếm</span>
                     }
                 </div>
                 {
@@ -136,10 +151,10 @@ function Header() {
                                 {
                                     suggests.map((suggest, index) => {
                                         return (
-                                            <div className='search_suggest_item' key={index}>
+                                            <Link className='search_suggest_item' key={index} to={`/search?keyword=${suggest.text}`} onClick={() => setSuggestDisplay(!suggestDisplay)}>
                                                 <ion-icon name="search"></ion-icon>
                                                 <span>{suggest.text}</span>
-                                            </div>
+                                            </Link>
                                         )
                                     })
                                 }
@@ -166,15 +181,18 @@ function Header() {
                                             <span className={currentUser.role === "Premium" ? 'bradge-premium' : currentUser.role === "Admin" ? 'bradge-admin' : ''}>{currentUser.role}</span>
                                         </div>
                                     </div>
-                                    <div className='avatar_popup_premium'>
-                                        <p>
-                                            Nâng cấp tài khoản thành Premium để sử dụng đầy đủ mọi tính năng. Nâng cấp 1 lần, sử dụng mãi mãi.
-                                        </p>
-                                        <button>
-                                            <img src={premiumIcon} alt='' />
-                                            <span>Nâng cấp</span>
-                                        </button>
-                                    </div>
+                                    {
+                                        currentUser?.role === "Free" &&
+                                        <div className='avatar_popup_premium'>
+                                            <p>
+                                                Nâng cấp tài khoản thành Premium để sử dụng đầy đủ mọi tính năng. Nâng cấp 1 lần, sử dụng mãi mãi.
+                                            </p>
+                                            <button>
+                                                <img src={premiumIcon} alt='' />
+                                                <span>Nâng cấp</span>
+                                            </button>
+                                        </div>
+                                    }
                                     <div className='avatar_popup_option'>
                                         <h2>Cá nhân</h2>
                                         {
@@ -183,7 +201,7 @@ function Header() {
                                                     <ion-icon name="settings-outline"></ion-icon>
                                                     <span>Admin Dashboard</span>
                                                 </a>
-                                            : ""    
+                                                : ""
 
                                         }
                                         <a href='/'>

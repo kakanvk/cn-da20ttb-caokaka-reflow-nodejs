@@ -6,9 +6,10 @@ import {
     TeamOutlined,
     UserOutlined,
     ExportOutlined,
+    FileImageOutlined,
 } from '@ant-design/icons';
 import { Flex, Layout, Menu } from 'antd';
-import { Link, Route, Routes, useNavigate } from 'react-router-dom';
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import CategoryManager from './CategoryManager/CategoryManager';
 import axios from 'axios';
 import UserManager from './UserManager/UserManager';
@@ -20,6 +21,8 @@ import UpdateSection from './SongManager/UpdateSection';
 import SingerManager from './SingerManager/SingerManager';
 import UpdateSinger from './SingerManager/UpdateSinger';
 import UpdateCategory from './CategoryManager/UpdateCategory';
+import BackgroundManager from './BackgroundManager/BackgroundManager';
+import UpdateBackground from './BackgroundManager/UpdateBackground';
 const { Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -37,11 +40,19 @@ const items = [
     getItem(<Link to="/admin/categories">Quản lý thể loại</Link>, 'categories', <DesktopOutlined />),
     getItem(<Link to="/admin/singers">Quản lý ca sĩ</Link>, 'singers', <TeamOutlined />),
     getItem(<Link to="/admin/songs">Quản lý bài hát</Link>, 'songs', <AudioOutlined />),
+    getItem(<Link to="/admin/backgrounds">Quản lý hình nền</Link>, 'backgrounds', <FileImageOutlined />),
 ];
 
 const AdminLayout = () => {
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const activeTab = location.pathname.startsWith('/admin/categories') ? "categories" : 
+    location.pathname.startsWith('/admin/users') ? "users" :
+    location.pathname.startsWith('/admin/singers') ? "singers" :
+    location.pathname.startsWith('/admin/songs') ? "songs" :
+    location.pathname.startsWith('/admin/backgrounds') ? "backgrounds" : "overview";
 
     const [collapsed, setCollapsed] = useState(false);
     const [currentUser, setCurrentUser] = useState();
@@ -83,7 +94,7 @@ const AdminLayout = () => {
                             {!collapsed && <h2>REFLOW</h2>}
                             <Link to="/" target='blank'><ExportOutlined style={{ color: "white" }}/></Link>
                         </Flex>
-                        <Menu theme="dark" defaultSelectedKeys={['overview']} mode="inline" items={items} />
+                        <Menu theme="dark" defaultSelectedKeys={[activeTab]} mode="inline" items={items} />
                     </Sider>
                     <Layout style={{ padding: "20px 30px", height: "100vh", overflowY: "auto"}}>
                         <Routes>
@@ -97,6 +108,8 @@ const AdminLayout = () => {
                             <Route path="songs/section/:id" element={<SectionManager />} />
                             <Route path="songs/section/:id/update/:sectionId" element={<UpdateSection />} />
                             <Route path="songs/update/:id" element={<UpdateSong />} />
+                            <Route path="backgrounds" element={<BackgroundManager />} />
+                            <Route path="backgrounds/update/:id" element={<UpdateBackground />} />
                         </Routes>
                     </Layout>
                 </Layout>

@@ -43,7 +43,7 @@ function Logup() {
                 console.log(response.data);
                 setTimeout(() => {
                     successMessage();
-                }, 2000)
+                }, 1000)
                 setSpinning(true);
                 setTimeout(() => {
                     setSpinning(false);
@@ -55,7 +55,7 @@ function Logup() {
                     }
 
                     navigate('/login', { state: stateData });
-                }, 3000);
+                }, 2000);
             })
             .catch(error => {
                 // console.error('Error fetching data:', error);

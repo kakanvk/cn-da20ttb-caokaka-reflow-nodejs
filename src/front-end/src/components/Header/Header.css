@@ -76,11 +76,16 @@
     display: flex;
     align-items: center;
     padding: 5px 10px;
-    background: #EEE;
+    background: #f1f1f1;
     border-radius: 20px;
     width: fit-content;
     gap: 5px;
     color: #888;
+    text-decoration: none;
+}
+
+.search_suggest_item:hover{
+    background: #e9e9e9;
 }
 
 .search_suggest_item span{

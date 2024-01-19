@@ -16,6 +16,7 @@ router.get('/:id', categoryController.getCategoryById);
 router.put('/:id', authMiddleware.authenticate, authMiddleware.isAdmin, categoryController.updateCategoryById);
 
 // [DELETE] /api/categorys/:id
+router.delete('/multiple', authMiddleware.authenticate, authMiddleware.isAdmin, categoryController.deleteCategoriesByIds);
 router.delete('/:id', authMiddleware.authenticate, authMiddleware.isAdmin, categoryController.deleteCategoryById);
 
 module.exports = router;

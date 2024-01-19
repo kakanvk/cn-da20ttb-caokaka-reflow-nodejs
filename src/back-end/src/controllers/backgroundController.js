@@ -11,6 +11,24 @@ const getAllBackgrounds = async (req, res) => {
     }
 };
 
+const getBackgroundById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Tìm background trong cơ sở dữ liệu theo id
+        const background = await Background.findById(id);
+
+        if (!background) {
+            return res.status(404).json({ message: 'Background not found' });
+        }
+
+        res.json(background);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
 const createBackground = async (req, res) => {
     const { name, image, premium_only } = req.body;
 
@@ -75,6 +93,7 @@ const deleteBackgroundsByIds = async (req, res) => {
 
 module.exports = {
     getAllBackgrounds,
+    getBackgroundById,
     createBackground,
     updateBackgroundById,
     deleteBackgroundsByIds

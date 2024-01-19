@@ -69,7 +69,7 @@ function Home() {
                 </div>
                 <div className='Home_content_artists'>
                     {
-                        featuredSingers.map((artist, index) => {
+                        featuredSingers.slice(0, 7).map((artist, index) => {
                             return (
                                 <Link className='artist_box' to="/" key={artist?._id}>
                                     <div>
@@ -94,7 +94,7 @@ function Home() {
                 </div>
                 <div className='Home_content_songs'>
                     {
-                        featuredSongs.map((song, index) => {
+                        featuredSongs.slice(0, 10).map((song, index) => {
                             return (
                                 <Link className='song_mini_box' to={`/screens/${song?._id}`} key={song?._id}>
                                     <div className='song_mini_box_img'>

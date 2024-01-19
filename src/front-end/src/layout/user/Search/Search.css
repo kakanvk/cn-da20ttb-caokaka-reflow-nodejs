@@ -1,0 +1,9 @@
+.search_artists{
+    grid-template-columns: repeat(10, 1fr);
+}
+
+.Search_noti{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

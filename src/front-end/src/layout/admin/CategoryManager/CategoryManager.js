@@ -22,11 +22,11 @@ function CategoryManager() {
 
     const columns = [
         {
-            title: 'Tên thể loại',
+            title: 'Tên hình nền',
             dataIndex: 'name',
             render: (record) =>
                 <Flex align='center' gap={10}>
-                    <Image src={record.avatar} width={60} style={{borderRadius: 5}}/>
+                    <Image src={record.avatar} width={60} style={{ borderRadius: 5 }} />
                     <h4 style={{ fontWeight: 500 }}>{record.name}</h4>
                 </Flex>
         },
@@ -119,7 +119,7 @@ function CategoryManager() {
                                 "image": downloadURL,
                             }
 
-                            axios.post(`http://localhost:3005/api/singers`, newUser, {
+                            axios.post(`http://localhost:3005/api/categorys`, newUser, {
                                 withCredentials: true
                             })
                                 .then(response => {
@@ -144,7 +144,7 @@ function CategoryManager() {
                     "name": values.name,
                 }
 
-                axios.post(`http://localhost:3005/api/singers`, newUser, {
+                axios.post(`http://localhost:3005/api/categorys`, newUser, {
                     withCredentials: true
                 })
                     .then(response => {
@@ -170,10 +170,10 @@ function CategoryManager() {
         setOpenDeleteConfirm(false);
 
         const dataKey = {
-            singerIds: selectedRowKeys
+            ids: selectedRowKeys
         }
 
-        axios.delete(`http://localhost:3005/api/singers/multiple`, {
+        axios.delete(`http://localhost:3005/api/categorys/multiple`, {
             data: dataKey,
             withCredentials: true
         })
@@ -226,12 +226,12 @@ function CategoryManager() {
                         title: 'Admin Dashboard',
                     },
                     {
-                        title: 'Quản lý thể loại',
+                        title: 'Quản lý hình nền',
                     },
                 ]}
             />
             <Flex>
-                <Button type="primary" onClick={showModal}>Thêm thể loại mới</Button>
+                <Button type="primary" onClick={showModal}>Thêm hình nền mới</Button>
             </Flex>
             {
                 selectedRowKeys.length !== 0 &&
@@ -246,7 +246,7 @@ function CategoryManager() {
                         zIndex: "10"
                     }}
                 >
-                    <span>Đã chọn {selectedRowKeys.length} thể loại</span>
+                    <span>Đã chọn {selectedRowKeys.length} hình nền</span>
                     <Button type='primary' danger onClick={showDeleteConfirm}>Xoá</Button>
                 </Flex>
             }
@@ -266,11 +266,11 @@ function CategoryManager() {
                 ]}
                 centered
             >
-                <p>{selectedRowKeys.length} thể loại sẽ bị xoá vĩnh viễn? Vẫn tiếp tục?</p>
+                <p>{selectedRowKeys.length} hình nền sẽ bị xoá vĩnh viễn? Vẫn tiếp tục?</p>
             </Modal>
             <Modal
                 open={open}
-                title="Thêm ca sĩ mới"
+                title="Thêm hình nền mới"
                 onOk={() => setOpen(false)}
                 onCancel={() => setOpen(false)}
                 footer={[
@@ -289,34 +289,31 @@ function CategoryManager() {
                 >
                     <Form.Item
                         name="name"
-                        label="Tên ca sĩ"
+                        label="Tên hình nền"
                         rules={[
                             {
                                 required: true,
-                                message: 'Vui lòng nhập tên thể loại!',
+                                message: 'Vui lòng nhập tên hình nền!',
                             },
                         ]}
                     >
-                        <Input placeholder="Tên ca sĩ" allowClear />
+                        <Input placeholder="Tên hình nền" allowClear />
                     </Form.Item>
                     <Form.Item
                         name="avatar"
                     >
-                        <ImgCrop showGrid>
-                            <Upload
-                                listType="picture-card"
-                                fileList={fileList}
-                                onChange={onChange}
-                                onPreview={onPreview}
-                                maxCount={1}
-                            >
-                                Upload
-                            </Upload>
-                        </ImgCrop>
+                        <Upload
+                            listType="picture-card"
+                            fileList={fileList}
+                            onChange={onChange}
+                            maxCount={1}
+                        >
+                            Upload
+                        </Upload>
                     </Form.Item>
                     <Form.Item style={{ paddingTop: 20 }}>
                         <Button type="primary" htmlType="submit" className="login-form-button" size="medium" style={{ width: "100%" }}>
-                            Thêm ca sĩ
+                            Thêm hình nền
                         </Button>
                     </Form.Item>
                 </Form>

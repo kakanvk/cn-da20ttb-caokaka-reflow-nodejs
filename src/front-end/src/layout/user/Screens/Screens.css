@@ -35,7 +35,7 @@
     position: relative;
 }
 
-.Screens_view_bg{
+.Screens_view_bg {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -49,7 +49,7 @@
     border-radius: 10px;
 }
 
-.Screens_view_bg > img{
+.Screens_view_bg>img {
     display: block;
     width: 100%;
     height: 100%;
@@ -114,14 +114,14 @@
     gap: inherit;
 }
 
-.Screens_view_option_left > div > span {
+.Screens_view_option_left>div>span {
     font-weight: 500;
     cursor: pointer;
     padding: 2px 6px;
     border-radius: 3px;
 }
 
-.Screens_view_option_left > div > span:hover{
+.Screens_view_option_left>div>span:hover {
     background-color: rgb(239, 239, 239);
     color: black;
 }
@@ -183,14 +183,14 @@
     aspect-ratio: 16 / 9;
 }
 
-.Screens_view_option_right_popup>div>div>div>img{
+.Screens_view_option_right_popup>div>div>div>img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.Screens_view_option_right_popup>div>div>div:hover{
+.Screens_view_option_right_popup>div>div>div:hover {
     cursor: pointer;
     border: 2px solid black;
     padding: 2px;
@@ -377,7 +377,7 @@
     height: 100vh;
 }
 
-.Screens_view_option_left > .currentSection > span{
+.Screens_view_option_left>.currentSection>span {
     font-weight: 800;
     background: var(--Gradient-HC, linear-gradient(85deg, #FC6076 32.67%, #FF9A44 131.74%));
     background-clip: text;
@@ -385,19 +385,53 @@
     -webkit-text-fill-color: transparent;
 }
 
-.dark_bg div{
+.dark_bg div {
     color: white;
 }
 
-.dark_bg .Screens_view_option .Screens_view_option_right ion-icon:hover{
+.dark_bg .Screens_view_option .Screens_view_option_right ion-icon:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.selected_background{
+.selected_background {
     border: 2px solid black;
     padding: 2px;
 }
 
-.fullscreen .Screens_view_main h1{
+.fullscreen .Screens_view_main h1 {
     font-size: 68px;
+}
+
+.lyric_content-option2 button {
+    transition: transform 0.3s ease-in-out;
+}
+
+.lyric_content-option2 button.dragging {
+    transform: scale(1.1);
+}
+
+.favourite-option{
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    font-weight: 500;
+    color: rgb(0, 172, 0);
+    margin-left: 10px;
+}
+
+.favourite-option > :nth-last-child(1){
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    color: rgba(0, 0, 0, 0.1);
+    transition: 0.2s;
+}
+
+.favourite-option > :nth-last-child(1):hover{
+    background-color: #00000016;
+    color: rgba(0, 0, 0, 0.8);
 }

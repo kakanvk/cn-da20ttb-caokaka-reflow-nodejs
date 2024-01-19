@@ -61,8 +61,13 @@ const updateCategoryById = async (req, res) => {
         }
 
         // Update thông tin của category
-        category.name = name;
-        category.image = image;
+        if(name){
+            category.name = name;
+        }
+
+        if(image){
+            category.image = image;
+        }
 
         // Lưu category sau khi đã được cập nhật
         await category.save();
@@ -92,10 +97,34 @@ const deleteCategoryById = async (req, res) => {
     }
 };
 
+const deleteCategoriesByIds = async (req, res) => {
+    const { ids } = req.body;
+
+    try {
+        // Kiểm tra xem có danh sách ids được gửi lên hay không
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({ message: 'Invalid or missing category ids' });
+        }
+
+        // Tìm và xoá nhiều categories trong database theo ids
+        const deletedCategories = await Category.deleteMany({ _id: { $in: ids } });
+
+        if (deletedCategories.deletedCount === 0) {
+            return res.status(404).json({ message: 'Categories not found' });
+        }
+
+        res.json({ message: 'Categories deleted successfully', categories: deletedCategories });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     createCategory,
     getAllCategories,
     getCategoryById,
     updateCategoryById,
-    deleteCategoryById
+    deleteCategoryById,
+    deleteCategoriesByIds
 };

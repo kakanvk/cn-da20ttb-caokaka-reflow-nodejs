@@ -1,16 +1,17 @@
 
 import { useEffect, useState } from "react";
 import premiumIcon from "../../../imgs/premium.png"
-import logo from "../../../imgs/logo.png"
-import bg from "../../../imgs/background/bg1.png"
+import lightlogo from "../../../imgs/LogoLight.png"
 import './Screens.css'
 import { Link, useParams } from 'react-router-dom';
-import { Spin, Tooltip, Dropdown, Menu } from 'antd';
+import { Spin, Tooltip, Dropdown, Menu, message } from 'antd';
 import axios from "axios";
+
 
 function Screens() {
 
     const { id } = useParams();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [currentUserData, setCurrentUserData] = useState();
@@ -30,6 +31,49 @@ function Screens() {
 
     const [spinning, setSpinning] = useState(false);
 
+    const successMessage = (msg) => {
+        messageApi.open({
+            key: 'login',
+            type: 'success',
+            content: msg
+        });
+    };
+
+    const errorMessage = (msg) => {
+        messageApi.open({
+            key: 'login',
+            type: 'error',
+            content: msg
+        });
+    };
+
+    const handleDragStart = (event, lyric) => {
+        event.dataTransfer.setData('text/plain', lyric._id);
+
+        event.target.classList.add('dragging');
+    };
+
+    const handleDragOver = (event) => {
+        event.preventDefault();
+    };
+
+    const handleDragEnd = (event) => {
+        event.target.classList.remove('dragging');
+    };
+
+    const handleDrop = (event, targetLyric) => {
+        const draggedLyricId = event.dataTransfer.getData('text/plain');
+        const updatedLyrics = lyrics.slice();
+        const draggedLyricIndex = updatedLyrics.findIndex((lyric) => lyric._id === draggedLyricId);
+        const targetLyricIndex = updatedLyrics.findIndex((lyric) => lyric._id === targetLyric._id);
+
+        updatedLyrics.splice(draggedLyricIndex, 1);
+        updatedLyrics.splice(targetLyricIndex, 0, lyrics[draggedLyricIndex]);
+
+        setLyrics(updatedLyrics);
+        setSentences(sentenceDetech(updatedLyrics));
+    };
+
     const handleViewMore = () => {
         if (visiblePara === lyrics.length)
             setVisiblePara(2);
@@ -38,15 +82,13 @@ function Screens() {
 
     const handleNextSentence = () => {
         if (currentSentenceIndex < sentences.length - numberOfSentencesToShow) {
-            console.log("Next: ", currentSentenceIndex + numberOfSentencesToShow);
             setCurrentSentenceIndex((prevIndex) => prevIndex + numberOfSentencesToShow);
         }
     };
 
     const handlePreviousSentence = () => {
-        if (currentSentenceIndex - numberOfSentencesToShow >= 0) {
-            console.log("Previous: ", currentSentenceIndex - numberOfSentencesToShow);
-            setCurrentSentenceIndex((prevIndex) => prevIndex - numberOfSentencesToShow);
+        if (currentSentenceIndex > 0) {
+            setCurrentSentenceIndex((prevIndex) => Math.max(prevIndex - numberOfSentencesToShow, 0));
         }
     };
 
@@ -76,7 +118,8 @@ function Screens() {
                 fecthUserData();
             })
             .catch(error => {
-                // console.error('Error fetching data:', error);
+                console.error('Error fetching data:', error);
+                errorMessage("Chỉ khả dụng với người dùng Premium");
             });
     }
 
@@ -91,10 +134,28 @@ function Screens() {
         })
             .then(response => {
                 // console.log(response.data);
+                successMessage("Đã thêm vào danh sách yêu thích");
                 fecthUserData();
             })
             .catch(error => {
                 // console.error('Error fetching data:', error);
+                errorMessage("Thêm thất bại");
+            });
+    }
+
+    const handleRemoveFavoriteSong = (_id) => {
+
+        axios.delete(`http://localhost:3005/api/users/favorites/${id}`, {
+            withCredentials: true
+        })
+            .then(response => {
+                // console.log(response.data);
+                successMessage("Đã xoá khỏi danh sách yêu thích");
+                fecthUserData();
+            })
+            .catch(error => {
+                // console.error('Error fetching data:', error);
+                errorMessage("Xoá thất bại");
             });
     }
 
@@ -162,6 +223,26 @@ function Screens() {
         setIsFullScreen(!isFullScreen);
     };
 
+    const sentenceDetech = (senData) => {
+        const formattedLyrics = [];
+
+        // Tách lời bài hát thành từng câu
+        senData.forEach(section => {
+            const cleanedLyrics = section.lyrics.replace(/\n|<br\/>/g, '|');
+            const sentences = cleanedLyrics.split('|');
+
+            sentences.forEach(sentence => {
+                formattedLyrics.push({
+                    paragraph: section.name,
+                    sentence: sentence.trim(),
+                    paragraph_id: section._id
+                });
+            });
+        });
+
+        return formattedLyrics;
+    }
+
     const fecthUserData = () => {
         axios.get(`http://localhost:3005/api/users/info`, {
             withCredentials: true
@@ -197,25 +278,7 @@ function Screens() {
             const sectionsData = songResponse.data.sections
             setLyrics(sectionsData);
 
-            const formattedLyrics = [];
-
-            // Tách lời bài hát thành từng câu
-            sectionsData.forEach(section => {
-                const cleanedLyrics = section.lyrics.replace(/\n|<br\/>/g, '|');
-                const sentences = cleanedLyrics.split('|');
-
-                sentences.forEach(sentence => {
-                    formattedLyrics.push({
-                        paragraph: section.name,
-                        sentence: sentence.trim(),
-                        paragraph_id: section._id
-                    });
-                });
-            });
-
-            console.log(formattedLyrics);
-
-            setSentences(formattedLyrics)
+            setSentences(sentenceDetech(sectionsData))
 
             setSpinning(false);
 
@@ -251,6 +314,7 @@ function Screens() {
 
     return (
         <div className="Screens">
+            {contextHolder}
             <Spin spinning={spinning} fullscreen />
             <div className={`Screens_view ${isFullScreen ? 'fullscreen' : ''} dark_bg`}>
                 <div className="Screens_view_bg">
@@ -261,7 +325,7 @@ function Screens() {
                         <ion-icon name="musical-notes"></ion-icon>
                         <span>{songsData?.title} | {songsData?.singerId.name}</span>
                     </div>
-                    <img src={logo} alt="" />
+                    <img src={lightlogo} alt="" />
                 </div>
                 <div className="Screens_view_main">
                     {renderLyrics()}
@@ -284,7 +348,7 @@ function Screens() {
                             overlay={
                                 <Menu onClick={handleOptionChange} selectedKeys={numberOfSentencesToShow}>
                                     <Menu.Item key="1">Hiển thị 1 câu</Menu.Item>
-                                    <Menu.Item key="2">Hiện thị 2 câu</Menu.Item>
+                                    <Menu.Item key="2">Hiển thị 2 câu</Menu.Item>
                                     <Menu.Item key="3">Hiển thị 3 câu</Menu.Item>
                                 </Menu>
                             }
@@ -368,10 +432,20 @@ function Screens() {
             <div className='Screens_songName'>
                 <div>
                     <span>{songsData?.title}</span>
-                    <button onClick={() => { handleAddFavoriteSong(songsData._id) }}>
-                        <ion-icon name="heart-outline"></ion-icon>
-                        <span>Thêm vào danh sách yêu thích</span>
-                    </button>
+                    {
+                        currentUserData?.favorites.includes(id) ?
+                            <div className="favourite-option">
+                                <i className="fa-solid fa-check"></i>
+                                <p>Đã thêm vào danh sách yêu thích</p>
+                                <Tooltip title="Xoá khỏi danh sách yêu thích">
+                                    <i className="fa-solid fa-trash" onClick={() => handleRemoveFavoriteSong(id)}></i>
+                                </Tooltip>
+                            </div> :
+                            <button onClick={() => { handleAddFavoriteSong(songsData._id) }}>
+                                <ion-icon name="heart-outline"></ion-icon>
+                                <span>Thêm vào danh sách yêu thích</span>
+                            </button>
+                    }
                 </div>
                 <Link to={`/singers/${songsData?.singerId._id}`}>{songsData?.singerId.name}</Link>
             </div>
@@ -423,13 +497,19 @@ function Screens() {
                         <div className="lyric_content-option2">
                             <p>Kéo thả để thay đổi thứ tự các đoạn</p>
                             <div>
-                                {
-                                    lyrics?.map((ly) => {
-                                        return (
-                                            <button key={ly._id}>{ly.name}</button>
-                                        )
-                                    })
-                                }
+                                {lyrics?.map((lyric, index) => (
+                                    <button
+                                        key={lyric._id}
+                                        onDragStart={(e) => handleDragStart(e, lyric)}
+                                        onDragEnd={handleDragEnd}
+                                        onDragOver={handleDragOver}
+                                        onDrop={(e) => handleDrop(e, lyric)}
+                                        draggable
+                                    >
+                                        {lyric.name}
+                                    </button>
+                                ))}
+
                             </div>
                         </div>
                     }
@@ -441,7 +521,7 @@ function Screens() {
                 </div>
                 <div className='Home_content_songs'>
                     {
-                        featuredSongs.map((song, index) => {
+                        featuredSongs.slice(0, 10).map((song, index) => {
                             return (
                                 <Link className='song_mini_box' to={`/screens/${song?._id}`} key={song?._id}>
                                     <div className='song_mini_box_img'>

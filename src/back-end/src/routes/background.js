@@ -5,6 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 // Route để lấy tất cả background
 router.get('/', backgroundController.getAllBackgrounds);
+router.get('/:id', backgroundController.getBackgroundById);
 
 // Route để thêm background mới
 router.post('/', authMiddleware.authenticate, authMiddleware.isAdmin,  backgroundController.createBackground);
